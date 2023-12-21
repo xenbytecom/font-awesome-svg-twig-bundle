@@ -1,0 +1,5 @@
+services:
+  Xenbyte\FontAwesomeSvgTwigBundle\Twig\SvgExtension:
+    #class: Xenbyte\SvgIconTwigBundle\Twig\SvgExtension
+    tags: [ 'twig.extension' ]
+    arguments: [ '%kernel.project_dir%' ]
