@@ -2,12 +2,12 @@
     "name": "xenbyte/font-awesome-svg-twig-bundle",
     "type": "symfony-bundle",
     "description": "Symfony bundle to use FontAwesome svg icons as inline svg.",
-    "keywords": ["twig", "i"],
+    "keywords": ["twig", "symfony", "icons", "fontawesome"],
     "license": "MIT",
     "authors": [
         {
             "name": "Stefan Brauner",
-            "email": "s.brauner@xenbyte.com"
+            "email": "info@xenbyte.com"
         }
     ],
     "require": {
