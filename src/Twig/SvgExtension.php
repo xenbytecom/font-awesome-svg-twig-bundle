@@ -125,9 +125,9 @@ final class SvgExtension extends AbstractExtension
 
     private function getIconFile(string $icon, string $style): string
     {
-        $prefix = explode('-', $icon)[0] ?? 'fa';
+        $prefix = explode(' ', $icon)[0] ?? '';
         if (\in_array($prefix ?? 'fa', ['fab', 'fad', 'far', 'fal', 'fas'], true)) {
-            $icon = str_replace($prefix . '-', '', $icon);
+            $icon = str_replace($prefix . ' ', '', $icon);
         }
 
         // Check assets-directory
@@ -162,9 +162,9 @@ final class SvgExtension extends AbstractExtension
     private function getIconStyle(string $icon, array $options): string
     {
         if (!\array_key_exists('style', $options)) {
-            $prefix = explode('-', $icon);
+            $prefix = explode(' ', $icon);
 
-            return match ($prefix[0] ?? 'fa') {
+            return match ($prefix[0] ?? '') {
                 'fab' => 'brands',
                 'fad' => 'duotone',
                 'far' => 'regular',

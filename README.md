@@ -34,17 +34,6 @@ Or `composer require fortawesome/font-awesome`, but this package contains only t
 ## Limitation
 - no support for stacks nor animations
 - no support 
-
-
-## Usage
-
-Once this bundle is installed, you can use the following Twig function:
-
-```
- {{ fa("smile-beam") }} == {{ fa("fas smile-beam") }}
- {{ fa("far smile-beam") }}
- {{ fa("far smile-beam", {size: 256, color: '#d50', class: 'card shadow'}) }}
-```
  
 ## Usage examples
 ```
