@@ -8,35 +8,37 @@ This bundle enables the support of [FontAwesome](https://fontawesome.com/) SVG i
 To install this package, you can just use composer:
 
 ```
-$ composer require xenbyte/font-awesome-svg-twig-bundle
+composer require xenbyte/font-awesome-svg-twig-bundle
 ```
 
 If you don't use Symfony Flex, register the bundle manually:
 
-// in config/bundles.php
-```
+```php
+// config/bundles.php
 return [
-// ...
-Xenbyte\FontAwesomeSvgTwigBundle\FontAwesomeSvgTwigBundle::class => ['all' => true],
+    // ...
+    Xenbyte\FontAwesomeSvgTwigBundle\FontAwesomeSvgTwigBundle::class => ['all' => true],
 ];
 ```
 
-This will also require the [fortawesome/font-awesome](https://packagist.org/packages/fortawesome/font-awesome) svg files.
+### Set up Font Awesome
+
+#### Option 1: Using the [fortawesome/font-awesome](https://packagist.org/packages/fortawesome/font-awesome) package
+```
+composer require fortawesome/font-awesome
+```
+
+The composer package contains only the free icons.
+
+### Option 2: Provide the font files manually
 Copy the files within `node_modules/@fortawesome/fontawesome-pro/svgs` to `assets/fontawesome`.
 
-Or `composer require fortawesome/font-awesome`, but this package contains only the free icons.
-
 ## Features
-- ...
-- no css, javascript for font files necessarry (just css for icon size in your own stylesheet)
-- Accessability (adds `aria-hidden="true" role="img"` to the svg by default)
-
-## Limitation
-- no support for stacks nor animations
-- no support 
+- accessability: adds `aria-hidden="true" role="img"` or a title item with `aria-labeledby` as [recommended by Font Awesome](https://fontawesome.com/docs/web/dig-deeper/accessibility)
+- no Font Awesome's css and javascript files necessarry (just css for icon size in your own stylesheet
  
 ## Usage examples
-```
+```twig
 {{ fa("home") }}
 {{ fa("fas home") }}
 {{ fa("home", {style: solid) }}
@@ -58,9 +60,8 @@ The following prefixes are supported;:
 * fal = light
 * fab = brands
 
-It is recommended, to add some default CSS.
-All icons in html output, will have got the class `fa-icon` set:
-```
+It is recommended to add some default css. All icons gets the class `fa-icon`:
+```css
 .fa-icon {
   display: inline-block;
   height: 1em;
@@ -68,12 +69,8 @@ All icons in html output, will have got the class `fa-icon` set:
   vertical-align: -0.125em;
 }
 ```
-When you provide options, like size or color, inline styles will overwrite the default CSS.
 
+)
 
-## Support
-
-If you like this Symfony bundle, you are invited to [donate some funds](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2DCCULSKFRZFU)
-to support further development. Thank you!
-
-For help please visit the issue section on Github.
+## Limitation
+[Stacking items](https://fontawesome.com/docs/web/style/stack) is currently not possible with this extension.
