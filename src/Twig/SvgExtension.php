@@ -48,21 +48,26 @@ final class SvgExtension extends AbstractExtension
     }
 
     /**
-     * Gibt ein FontAwesome-Icon zurück.
+     * Inline svg output of the Font Awesome icon.
      *
      * @param array{style?: string, color?: string, secondaryColor?: string, class?: string, title?: string, size?: string} $options
      */
     public function fontAwesomeIcon(string $icon, array $options = []): string
     {
         $style = $this->getIconStyle($icon, $options);
-        $iconDocument = $this->getIconXml($icon, $style);
+        $iconName = $this->getIconName($icon);
+
+        $iconDocument = $this->getIconXml($iconName, $style);
 
         /** @var \DOMElement $svgRoot */
         $svgRoot = $iconDocument->getElementsByTagName('svg')->item(0);
 
         if (\array_key_exists('class', $options)) {
             $svgRoot->setAttribute('class', 'fa-icon ' . $options['class']);
+        } else {
+            $svgRoot->setAttribute('class', 'fa-icon');
         }
+
         $svgRoot->setAttribute('role', 'img');
 
         /** @var \DOMElement $primaryPath */
@@ -123,13 +128,11 @@ final class SvgExtension extends AbstractExtension
         return $iconDocument->saveHTML();
     }
 
+    /**
+     * Search for the needed icon file.
+     */
     private function getIconFile(string $icon, string $style): string
     {
-        $prefix = explode(' ', $icon)[0] ?? '';
-        if (\in_array($prefix ?? 'fa', ['fab', 'fad', 'far', 'fal', 'fas'], true)) {
-            $icon = str_replace($prefix . ' ', '', $icon);
-        }
-
         // Check assets-directory
         $path = $this->projectDir . '/assets/font-awesome/' . $style . '/' . $icon . '.svg';
         if (file_exists($path)) {
@@ -146,6 +149,9 @@ final class SvgExtension extends AbstractExtension
         throw new \RuntimeException('FontAwesome icon "' . $icon . '" not found.');
     }
 
+    /**
+     * Read the svg file and return it as xml document.
+     */
     private function getIconXml(string $icon, string $style): \DOMDocument
     {
         $content = file_get_contents($this->getIconFile($icon, $style));
@@ -157,25 +163,14 @@ final class SvgExtension extends AbstractExtension
     }
 
     /**
+     * Gets the icon style by options array or icon name.
+     *
      * @param array{style?: string, color?: string, secondaryColor?: string, class?: string, title?: string} $options
      */
     private function getIconStyle(string $icon, array $options): string
     {
-        if (!\array_key_exists('style', $options)) {
-            $prefix = explode(' ', $icon);
-
-            return match ($prefix[0] ?? '') {
-                'fab' => 'brands',
-                'fad' => 'duotone',
-                'far' => 'regular',
-                'fal' => 'light',
-                'fat' => 'thin',
-                default => 'solid',
-            };
-        }
-
-        $style = $options['style'];
-        if (!\in_array($style,
+        // style option with higher priority
+        if (\in_array($options['style'] ?? '',
             [
                 'brands',
                 'duotone',
@@ -189,9 +184,45 @@ final class SvgExtension extends AbstractExtension
                 'thin',
             ], true
         )) {
-            throw new \RuntimeException('Invalid FontAwesome style "' . $style . '.');
+            return $options['style'];
         }
 
-        return $style;
+        // style option is set, but invalid
+        if (!empty($options['style'])) {
+            throw new \RuntimeException('Invalid FontAwesome style "' . $options['style'] . '.');
+        }
+
+        // if no style option is set, check for prefix, otherwise use "solid" as the default value
+        $prefix = explode(' ', $icon);
+
+        return match ($prefix[0] ?? '') {
+            'fab' => 'brands',
+            'fad' => 'duotone',
+            'far' => 'regular',
+            'fal' => 'light',
+            'fat' => 'thin',
+            default => 'solid',
+        };
+    }
+
+    /**
+     * Gets the name of the icon without optional style prefixes.
+     */
+    private function getIconName(string $icon): string
+    {
+        // removes the prefixes
+        $icon = strtolower($icon);
+
+        $prefix = explode(' ', $icon)[0] ?? '';
+        if (\in_array($prefix ?? 'fa', ['fab', 'fad', 'far', 'fal', 'fas'], true)) {
+            $icon = str_replace($prefix . ' ', '', $icon);
+        }
+
+        // removes "fa-" in the icon name
+        if (str_starts_with($icon, 'fa-')) {
+            $icon = substr($icon, 3);
+        }
+
+        return $icon;
     }
 }
