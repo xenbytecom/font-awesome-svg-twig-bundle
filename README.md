@@ -36,7 +36,7 @@ Copy the files within `node_modules/@fortawesome/fontawesome-pro/svgs` to `asset
 ## Features
 - accessability: adds `aria-hidden="true" role="img"` or a title item with `aria-labeledby` as [recommended by Font Awesome](https://fontawesome.com/docs/web/dig-deeper/accessibility)
 - no Font Awesome's css and javascript files necessarry (just css for icon size in your own stylesheet
-
+ 
 ## Usage examples
 ```twig
 {{ fa("home") }}
