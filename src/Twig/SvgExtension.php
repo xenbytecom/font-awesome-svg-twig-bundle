@@ -52,7 +52,7 @@ final class SvgExtension extends AbstractExtension
      *
      * @param array{style?: string, color?: string, secondaryColor?: string, class?: string, title?: string, size?: string} $options
      */
-    public function fontAwesomeIcon(string $icon, array $options = []): string
+    public function fontAwesomeIcon(string $icon, array $options = []): false|string
     {
         $style = $this->getIconStyle($icon, $options);
         $iconName = $this->getIconName($icon);
@@ -70,27 +70,35 @@ final class SvgExtension extends AbstractExtension
 
         $svgRoot->setAttribute('role', 'img');
 
-        /** @var \DOMElement $primaryPath */
-        $primaryPath = $svgRoot->getElementsByTagName('path')->item(0);
-        $firstPath = $primaryPath;
+        /** @var \DOMElement $primary */
+        $primary = $svgRoot->getElementsByTagName('path')->item(0);
 
-        /* @var \DOMElement $primaryPath */
+        /** @var \DOMElement $firstChild */
+        $firstChild = $svgRoot->firstChild;
+
+        /* @var \DOMElement $primary */
         if ('duotone' === $style) {
+            // set colors for duotone icons
             $finder = new \DOMXPath($iconDocument);
 
             if (\array_key_exists('secondaryColor', $options)) {
                 $secondaryPath = $finder->query('//*[name()="path" and @class="fa-secondary"]');
-                if ($secondaryPath->count() > 0) {
+                if ($secondaryPath instanceof \DOMNodeList && $secondaryPath->count() > 0) {
                     /** @var \DOMElement $secondary */
                     $secondary = $secondaryPath->item(0);
                     $secondary->setAttribute('fill', $options['secondaryColor']);
                 }
             }
 
-            /** @var \DOMElement $primaryPath */
-            $primaryPath = $finder->query('//*[name()="path" and @class="fa-primary"]')->item(0);
+            $primaryPath = $finder->query('//*[name()="path" and @class="fa-primary"]');
+            if ($primaryPath instanceof \DOMNodeList && $primaryPath->count() > 0) {
+                /** @var \DOMElement $primary */
+                $primary = $primaryPath->item(0) ?? $primary;
+            }
         }
 
+        // adds a title element
+        // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/title
         if (\array_key_exists('title', $options)) {
             try {
                 $random = bin2hex(random_bytes(3));
@@ -104,7 +112,7 @@ final class SvgExtension extends AbstractExtension
                 $titleNode->setAttribute('id', $id);
                 $titleNode->textContent = $options['title'];
 
-                $firstPath->parentNode->insertBefore($titleNode, $firstPath);
+                $firstChild->parentNode->insertBefore($titleNode, $firstChild);
                 $svgRoot->setAttribute('aria-labelledby', $id);
             } catch (\DOMException) {
             }
@@ -115,14 +123,22 @@ final class SvgExtension extends AbstractExtension
 
         if (\array_key_exists('color', $options)) {
             // sets the color for the first path element
-            $primaryPath->setAttribute('fill', $options['color']);
+            $primary->setAttribute('fill', $options['color']);
         } else {
-            $primaryPath->setAttribute('fill', 'currentColor');
+            // default: "currentColor"
+            $primary->setAttribute('fill', 'currentColor');
         }
 
         if (\array_key_exists('size', $options)) {
-            // sets the color for the first path element
+            // sets the image size
             $svgRoot->setAttribute('style', 'height:' . $options['size']);
+        }
+
+        // allow data-attributes for svg objects
+        foreach ($options as $option => $value) {
+            if (str_starts_with($option, 'data-')) {
+                $svgRoot->setAttribute($option, $value);
+            }
         }
 
         return $iconDocument->saveHTML();
@@ -155,6 +171,9 @@ final class SvgExtension extends AbstractExtension
     private function getIconXml(string $icon, string $style): \DOMDocument
     {
         $content = file_get_contents($this->getIconFile($icon, $style));
+        if (!\is_string($content)) {
+            throw new \RuntimeException('Cannot load content of "' . $icon . '" iocn with style "' . $style . '".');
+        }
 
         $iconDocument = new \DOMDocument();
         $iconDocument->loadXML($content);
@@ -188,7 +207,7 @@ final class SvgExtension extends AbstractExtension
         }
 
         // style option is set, but invalid
-        if (!empty($options['style'])) {
+        if (isset($options['style'])) {
             throw new \RuntimeException('Invalid FontAwesome style "' . $options['style'] . '.');
         }
 
@@ -214,7 +233,7 @@ final class SvgExtension extends AbstractExtension
         $icon = strtolower($icon);
 
         $prefix = explode(' ', $icon)[0] ?? '';
-        if (\in_array($prefix ?? 'fa', ['fab', 'fad', 'far', 'fal', 'fas'], true)) {
+        if (\in_array($prefix, ['fab', 'fad', 'far', 'fal', 'fas'], true)) {
             $icon = str_replace($prefix . ' ', '', $icon);
         }
 

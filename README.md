@@ -41,9 +41,9 @@ Copy the files within `node_modules/@fortawesome/fontawesome-pro/svgs` to `asset
 ```twig
 {{ fa("home") }}
 {{ fa("fas home") }}
-{{ fa("home", {style: solid) }}
+{{ fa("home", {style: 'solid') }}
 {{ fa("home", {style: 'regular', color: '#330000', size: '2rem', class: 'icon') }}
-{{ fa("home", {style: 'duotone', color: '#333', secondaryColor: '#999', 'title': 'Title') }}
+{{ fa("home", {style: 'duotone', color: '#333', secondaryColor: '#999', 'title': 'Title', data-foo) }}
 ```
 
 Default style is "solid". `{{ fa("home") }}` and `{{ fa("home", {style: solid) }}` will produce the same output.

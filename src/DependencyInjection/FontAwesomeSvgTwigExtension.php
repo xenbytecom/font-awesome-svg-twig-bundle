@@ -21,7 +21,9 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 final class FontAwesomeSvgTwigExtension extends Extension
 {
     /**
-     * @param array<string, mixed> $configs
+     * @param array<mixed> $configs
+     *
+     * @throws \Exception
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
