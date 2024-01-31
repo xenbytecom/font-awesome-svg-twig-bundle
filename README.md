@@ -2,16 +2,24 @@
 
 This bundle enables the support of [FontAwesome](https://fontawesome.com/) SVG icons as inline output within twig templates.
 
+![Packagist Version](https://img.shields.io/packagist/v/xenbyte/font-awesome-svg-twig-bundle)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/donate/?hosted_button_id=J425R728CYH9N)
+
+## Features
+- accessability: adds `aria-hidden="true" role="img"` or a title item with `aria-labeledby` as [recommended by Font Awesome](https://fontawesome.com/docs/web/dig-deeper/accessibility)
+- supports Font Awesome composer package (contains only free icons) and manually provided icons (including pro icons)   
+- no Font Awesome's css and javascript files necessarry (just css for icon size in your own stylesheet)
 
 ## Installation
 
-To install this package, you can just use composer:
+To install this package, you can just use composer. Open a command console, enter your project directory and execute:
 
 ```
 composer require xenbyte/font-awesome-svg-twig-bundle
 ```
 
-If you don't use Symfony Flex, register the bundle manually:
+If you don't use Symfony Flex, enable the bundle by adding it to the list of registered bundles 
+in the `config/bundles.php` file of your project:
 
 ```php
 // config/bundles.php
@@ -30,12 +38,18 @@ composer require fortawesome/font-awesome
 
 The composer package contains only the free icons.
 
-### Option 2: Provide the font files manually
-Copy the files within `node_modules/@fortawesome/fontawesome-pro/svgs` to `assets/fontawesome`.
+#### Option 2: Provide the font files manually
+Copy the files within `node_modules/@fortawesome/fontawesome-pro/svgs` to e. g. `assets/fontawesome`.
 
-## Features
-- accessability: adds `aria-hidden="true" role="img"` or a title item with `aria-labeledby` as [recommended by Font Awesome](https://fontawesome.com/docs/web/dig-deeper/accessibility)
-- no Font Awesome's css and javascript files necessarry (just css for icon size in your own stylesheet
+## Configuration
+If you need to customize the global bundle configuration, you can create a /config/packages/font_awesome_svg_twig.yaml 
+file with your configuration:
+
+```yaml
+font_awesome_svg_twig:
+  icon_folder: assets/fontawesome
+  svg_class: fa-icon
+```
  
 ## Usage examples
 ```twig
@@ -69,6 +83,10 @@ It is recommended to add some default css. All icons gets the class `fa-icon`:
   vertical-align: -0.125em;
 }
 ```
+
+## Options
+* `resource_folder`: Folder with the font awesome icons
+* `svg_class`: Class which is added to the svg element
 
 ## Limitation
 [Stacking items](https://fontawesome.com/docs/web/style/stack) is currently not possible with this extension.

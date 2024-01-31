@@ -7,14 +7,20 @@
     "authors": [
         {
             "name": "Stefan Brauner",
-            "email": "info@xenbyte.com"
+            "email": "info@xenbyte.com",
+            "homepage": "https://www.xenbyte.com/"
         }
     ],
     "require": {
         "php": ">=8.1",
-        "symfony/framework-bundle": "^6.2 || ^7",
-        "symfony/twig-bundle": "^6.2 || ^7",
+        "symfony/framework-bundle": "^6.2 || ^7.0.3",
+        "symfony/twig-bundle": "^6.2 || ^7.0.3",
         "ext-dom": "*"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.10.57",
+        "phpunit/phpunit": "^9.6.16",
+        "symfony/phpunit-bridge": "^6.2 || ^7.0.3"
     },
     "config": {
         "sort-packages": true
@@ -23,5 +29,15 @@
         "psr-4": {
             "Xenbyte\\FontAwesomeSvgTwigBundle\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Xenbyte\\FontAwesomeSvgTwigBundle\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "phpstan": "vendor/bin/phpstan analyse src tests --no-progress --error-format=table --level=max",
+        "test": "php vendor/bin/phpunit",
+        "coverage": "php vendor/bin/phpunit --coverage-text"
     }
 }

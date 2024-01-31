@@ -27,7 +27,13 @@ final class FontAwesomeSvgTwigExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new YamlFileLoader($container, new FileLocator(\dirname(__DIR__) . '/Resources/config'));
         $loader->load('services.yaml');
+
+        $configuration = new Configuration();
+        $config = $this->processConfiguration($configuration, $configs);
+
+        $container->setParameter('font_awesome_svg_twig.icon_folder', $config['icon_folder']);
+        $container->setParameter('font_awesome_svg_twig.svg_class', $config['svg_class']);
     }
 }

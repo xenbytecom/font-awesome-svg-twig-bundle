@@ -32,7 +32,7 @@ use Twig\TwigFunction;
  */
 final class SvgExtension extends AbstractExtension
 {
-    public function __construct(private readonly string $projectDir)
+    public function __construct(private readonly string $projectDir, private string $iconFolder, private readonly string $svgClass)
     {
         // TODO: Options for default class, custom path
     }
@@ -63,9 +63,9 @@ final class SvgExtension extends AbstractExtension
         $svgRoot = $iconDocument->getElementsByTagName('svg')->item(0);
 
         if (\array_key_exists('class', $options)) {
-            $svgRoot->setAttribute('class', 'fa-icon ' . $options['class']);
-        } else {
-            $svgRoot->setAttribute('class', 'fa-icon');
+            $svgRoot->setAttribute('class', trim($this->svgClass .  ' ' . $options['class']));
+        } elseif('' !== $this->svgClass) {
+            $svgRoot->setAttribute('class', $this->svgClass);
         }
 
         $svgRoot->setAttribute('role', 'img');
@@ -112,8 +112,11 @@ final class SvgExtension extends AbstractExtension
                 $titleNode->setAttribute('id', $id);
                 $titleNode->textContent = $options['title'];
 
-                $firstChild->parentNode->insertBefore($titleNode, $firstChild);
-                $svgRoot->setAttribute('aria-labelledby', $id);
+                /** @var \DOMNode $firstChild->parentNode */
+                if($firstChild->parentNode instanceof \DOMNode){
+                    $firstChild->parentNode->insertBefore($titleNode, $firstChild);
+                    $svgRoot->setAttribute('aria-labelledby', $id);
+                }
             } catch (\DOMException) {
             }
         } else {
@@ -149,8 +152,18 @@ final class SvgExtension extends AbstractExtension
      */
     private function getIconFile(string $icon, string $style): string
     {
+        // adds a trailing slash if missing
+        if (!str_ends_with($this->iconFolder, '/')) {
+            $this->iconFolder .= '/';
+        }
+
+        // prepends the project root directory if the folder doesn't start with a slash
+        if (!str_starts_with($this->iconFolder, '/')) {
+            $this->iconFolder = $this->projectDir . '/' . $this->iconFolder;
+        }
+
         // Check assets-directory
-        $path = $this->projectDir . '/assets/font-awesome/' . $style . '/' . $icon . '.svg';
+        $path = $this->iconFolder . $style . '/' . $icon . '.svg';
         if (file_exists($path)) {
             return $path;
         }
@@ -172,7 +185,7 @@ final class SvgExtension extends AbstractExtension
     {
         $content = file_get_contents($this->getIconFile($icon, $style));
         if (!\is_string($content)) {
-            throw new \RuntimeException('Cannot load content of "' . $icon . '" iocn with style "' . $style . '".');
+            throw new \RuntimeException('Cannot load content of "' . $icon . '" icon with style "' . $style . '".');
         }
 
         $iconDocument = new \DOMDocument();

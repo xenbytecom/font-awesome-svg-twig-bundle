@@ -1,5 +1,8 @@
 services:
-  Xenbyte\FontAwesomeSvgTwigBundle\Twig\SvgExtension:
-    #class: Xenbyte\SvgIconTwigBundle\Twig\SvgExtension
-    tags: [ 'twig.extension' ]
-    arguments: [ '%kernel.project_dir%' ]
+    font_awesome_svg_twig.twig_extension:
+        class: Xenbyte\FontAwesomeSvgTwigBundle\Twig\SvgExtension
+        tags: [ 'twig.extension' ]
+        arguments:
+          - '%kernel.project_dir%'
+          - '%font_awesome_svg_twig.icon_folder%'
+          - '%font_awesome_svg_twig.svg_class%'
