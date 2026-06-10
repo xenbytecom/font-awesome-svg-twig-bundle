@@ -33,7 +33,12 @@ final class FontAwesomeSvgTwigExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $container->setParameter('font_awesome_svg_twig.icon_folder', $config['icon_folder']);
-        $container->setParameter('font_awesome_svg_twig.svg_class', $config['svg_class']);
+        /** @var string $iconFolder */
+        $iconFolder = $config['icon_folder'];
+        /** @var string $svgClass */
+        $svgClass = $config['svg_class'];
+
+        $container->setParameter('font_awesome_svg_twig.icon_folder', $iconFolder);
+        $container->setParameter('font_awesome_svg_twig.svg_class', $svgClass);
     }
 }

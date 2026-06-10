@@ -227,7 +227,7 @@ final class SvgExtension extends AbstractExtension
         // if no style option is set, check for prefix, otherwise use "solid" as the default value
         $prefix = explode(' ', $icon);
 
-        return match ($prefix[0] ?? '') {
+        return match ($prefix[0]) {
             'fab' => 'brands',
             'fad' => 'duotone',
             'far' => 'regular',
@@ -245,7 +245,7 @@ final class SvgExtension extends AbstractExtension
         // removes the prefixes
         $icon = strtolower($icon);
 
-        $prefix = explode(' ', $icon)[0] ?? '';
+        $prefix = explode(' ', $icon)[0];
         if (\in_array($prefix, ['fab', 'fad', 'far', 'fal', 'fas'], true)) {
             $icon = str_replace($prefix . ' ', '', $icon);
         }
