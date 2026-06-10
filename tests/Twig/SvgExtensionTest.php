@@ -30,11 +30,15 @@ class SvgExtensionTest extends TestCase
     {
         $svg = $this->extension->fontAwesomeIcon($icon, $options);
         self::assertIsString($svg);
-        $outputWithChangedComment = trim(preg_replace('/<!--!(\s)?[\w\s:\/.@,\-()]+(\s)?-->/', '<!--! https://fontawesome.com License -->', $svg) ?? '');
+        $outputWithChangedComment = preg_replace('/<!--!(\s)?[\w\s:\/.@,\-()]+(\s)?-->/', '<!--! https://fontawesome.com License -->', $svg);
+        self::assertIsString($outputWithChangedComment);
+        $outputWithChangedComment = trim($outputWithChangedComment);
 
         // Normalize title IDs for comparison
         $outputWithNormalizedId = preg_replace('/id="solid-house-[a-f0-9]{6}-title"/', 'id="solid-house-random-title"', $outputWithChangedComment);
+        self::assertIsString($outputWithNormalizedId);
         $outputWithNormalizedId = preg_replace('/aria-labelledby="solid-house-[a-f0-9]{6}-title"/', 'aria-labelledby="solid-house-random-title"', $outputWithNormalizedId);
+        self::assertIsString($outputWithNormalizedId);
 
         self::assertSame($expected, $outputWithNormalizedId);
     }
