@@ -140,7 +140,7 @@ final class SvgExtension extends AbstractExtension
             }
         }
 
-        return $iconDocument->saveHTML();
+        return $iconDocument->saveHTML($svgRoot);
     }
 
     /**
