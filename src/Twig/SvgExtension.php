@@ -101,7 +101,7 @@ final class SvgExtension extends AbstractExtension
         if (\array_key_exists('title', $options)) {
             $randomizer = new Randomizer();
             $random = bin2hex($randomizer->getBytes(3));
-            $id = $style . '-' . $icon . '-' . $random . '-title';
+            $id = $style . '-' . $iconName . '-' . $random . '-title';
 
             try {
                 $titleNode = $iconDocument->createElement('title');
