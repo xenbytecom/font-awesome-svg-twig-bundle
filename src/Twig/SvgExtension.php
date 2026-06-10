@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Xenbyte\FontAwesomeSvgTwigBundle\Twig;
 
-use Random\RandomException;
+use Random\Randomizer;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -34,7 +34,6 @@ final class SvgExtension extends AbstractExtension
 {
     public function __construct(private readonly string $projectDir, private string $iconFolder, private readonly string $svgClass)
     {
-        // TODO: Options for default class, custom path
     }
 
     /**
@@ -100,11 +99,8 @@ final class SvgExtension extends AbstractExtension
         // adds a title element
         // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/title
         if (\array_key_exists('title', $options)) {
-            try {
-                $random = bin2hex(random_bytes(3));
-            } catch (RandomException) {
-                $random = time();
-            }
+            $randomizer = new Randomizer();
+            $random = bin2hex($randomizer->getBytes(3));
             $id = $style . '-' . $icon . '-' . $random . '-title';
 
             try {
